@@ -102,7 +102,7 @@ static void timer_cb(lv_timer_t *t)
 #endif
 
     int hour = tm_info.tm_hour;
-    int min  = tm_info.tm_min;
+    int min = tm_info.tm_min;
 
     /* ===== 显示 ===== */
     set_digit(ui, 0, hour / 10);
@@ -118,7 +118,6 @@ static void timer_cb(lv_timer_t *t)
     {
         lv_obj_set_style_opa(ui->colon[i], opa, 0);
     }
-
 }
 /* ===== 创建 ===== */
 ui_digital_clock_t *ui_digital_clock_create(lv_obj_t *parent)
@@ -136,6 +135,8 @@ ui_digital_clock_t *ui_digital_clock_create(lv_obj_t *parent)
     lv_obj_clear_flag(ui->cont, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_style_radius(ui->cont, 120, 0);
     lv_obj_set_style_bg_color(ui->cont, lv_color_hex(0x1C1C1E), 0);
+    lv_obj_set_style_border_width(ui->cont, 0, 0);
+    lv_obj_set_style_pad_all(ui->cont, 0, 0);
 
     /* ===== 可调参数 ===== */
     int digit_offset_x = -30; // 数码管X偏移

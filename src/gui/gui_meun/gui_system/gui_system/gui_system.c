@@ -177,14 +177,9 @@
 static const char *TAG = "gui_system";
 
 /* =========================
- * 全局对象（组件化）
+ * 使用统一GUI入口
  * ========================= */
-gui_system_t gui_system = {
-    .knob = {
-        .ui = NULL,
-        .value = 0,
-    },
-};
+extern gui_t gui;
 
 /* =========================
  * 系统菜单项定义
@@ -230,7 +225,7 @@ static void gui_system_page_async_run(void *arg)
     (void)arg;
 
     /* 删除当前 UI */
-    if (gui_system.knob.ui)
+    if (gui.system.main.ui)
     {
         gui_system_page_delete();
     }
@@ -249,8 +244,8 @@ static void gui_system_page_async_run(void *arg)
  * ========================= */
 void gui_system_page(lv_obj_t *parent)
 {
-    gui_system.knob.ui = ui_segment_knob_create(parent);
-    if (!gui_system.knob.ui)
+    gui.system.main.ui = ui_segment_knob_create(parent);
+    if (!gui.system.main.ui)
     {
         ESP_LOGE(TAG, "knob create failed");
         return;
@@ -258,19 +253,14 @@ void gui_system_page(lv_obj_t *parent)
 
     for (uint8_t i = 0; i < ITEM_COUNT; i++)
     {
-        ui_segment_knob_add_item(
-            gui_system.knob.ui,
-            items[i].name,
-            items[i].icon,
-            open_page,
-            (void *)(intptr_t)i);
+        ui_segment_knob_add_item(gui.system.main.ui, items[i].name, items[i].icon, open_page, (void *)(intptr_t)i);
     }
 
-    encoder_add_focus_obj_group_event(
-        gui_system.knob.ui->cont,
-        gui_system_page_knob_event_cb,
-        gui_system.knob.ui // 传整个组件
-    );
+    encoder_add_focus_obj_group_event(gui.system.main.ui->cont, gui_system_page_knob_event_cb, gui.system.main.ui);
+
+    gui.system.main.active = true;
+
+    ESP_LOGI(TAG, "gui_system_page run");
 }
 
 /* =========================
@@ -288,7 +278,7 @@ static void open_page_async(void *arg)
     encoder_group_set_editing(false);
 
     /* 删除当前 UI */
-    if (gui_system.knob.ui)
+    if (gui.system.main.ui)
     {
         gui_system_page_delete();
     }
@@ -316,12 +306,13 @@ static void gui_system_page_delete_async(void *arg)
 {
     (void)arg;
 
-    if (!gui_system.knob.ui)
+    if (!gui.system.main.ui)
         return;
 
-    encoder_remove_obj_group(gui_system.knob.ui->cont);
-    ui_segment_knob_delete(gui_system.knob.ui);
-    gui_system.knob.ui = NULL;
+    encoder_remove_obj_group(gui.system.main.ui->cont);
+    ui_segment_knob_delete(gui.system.main.ui);
+    gui.system.main.ui = NULL;
+    gui.system.main.active = false;
 }
 
 void gui_system_page_delete(void)
@@ -334,12 +325,12 @@ void gui_system_page_delete(void)
  * ========================= */
 void gui_system_subpage_delete_all(void)
 {
-    if (gui_system_buzzer.buzzer.ui)
+    if (gui.system.buzzer.ui)
     {
         gui_system_buzzer_page_delete();
     }
 
-    if (gui_system_motor.motor.ui)
+    if (gui.system.motor.ui)
     {
         gui_system_motor_page_delete();
     }

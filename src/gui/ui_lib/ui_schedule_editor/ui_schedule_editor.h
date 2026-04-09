@@ -42,6 +42,26 @@ extern "C"
 
     } schedule_t;
 
+    typedef enum
+    {
+        FOCUS_START_H = 0,
+        FOCUS_START_M,
+        FOCUS_END_H,
+        FOCUS_END_M,
+        FOCUS_SWITCH,
+        FOCUS_SAVE,
+        FOCUS_MAX
+    } schedule_focus_t;
+
+    /* =========================
+   MODE
+========================= */
+    typedef enum
+    {
+        MODE_FOCUS = 0,
+        MODE_EDIT
+    } edit_mode_t;
+
     /* =========================
        UI editor
     ========================= */
@@ -57,6 +77,10 @@ extern "C"
         lv_obj_t *sw_enable;
         lv_obj_t *btn_save;
 
+        schedule_focus_t focus;
+        edit_mode_t mode;
+        int edit_target;
+        
         schedule_t *schedule; // ⭐ 指向外部数据
 
         /* 保存后回调 */
@@ -69,7 +93,11 @@ extern "C"
     ========================= */
     ui_schedule_editor_t *ui_schedule_editor_create(lv_obj_t *parent, schedule_t *schedule, void (*on_saved)(void *user_data), void *user_data);
 
-    void ui_schedule_editor_destroy(ui_schedule_editor_t *ed);
+    void ui_schedule_editor_delete(ui_schedule_editor_t *ed);
+
+    void ui_schedule_editor_left(ui_schedule_editor_t *ui);  // Encoder 左
+    void ui_schedule_editor_right(ui_schedule_editor_t *ui); // Encoder 右
+    void ui_schedule_editor_enter(ui_schedule_editor_t *ui); // Encoder 按下
 #ifdef __cplusplus
 }
 #endif

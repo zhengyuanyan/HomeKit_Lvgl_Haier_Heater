@@ -5,15 +5,9 @@
 static const char *TAG = "gui_heater_switch";
 
 /* =========================
- * 全局对象（组件化）
+ * 使用统一GUI入口
  * ========================= */
-
-gui_heater_t gui_heater_switch = {
-    .heater = {
-        .ui = NULL,
-        .value = false,
-    },
-};
+extern gui_t gui;
 
 /* =========================
  * 页面创建
@@ -27,20 +21,31 @@ void gui_heater_switch_page(lv_obj_t *parent)
         return;
     }
 
-    /* 创建开关组件 */
-    gui_heater_switch.heater.ui = ui_capsule_switch_create(parent);
+    /* 防止重复创建 */
+    if (gui.heater.heater.ui)
+    {
+        ESP_LOGW(TAG, "heater UI already created");
+        return;
+    }
 
-    if (!gui_heater_switch.heater.ui)
+    /* 创建开关组件 */
+    gui.heater.heater.ui = ui_capsule_switch_create(parent);
+
+    if (!gui.heater.heater.ui)
     {
         ESP_LOGE(TAG, "switch create failed");
         return;
     }
 
-    /* 同步状态（关键点） */
-    ui_capsule_switch_set(gui_heater_switch.heater.ui, gui_heater_switch.heater.value);
+    /* 同步状态 */
+    ui_capsule_switch_set(gui.heater.heater.ui, gui.heater.heater.value);
 
-    /* encoder 绑定（⚠️ 传组件） */
-    encoder_add_focus_obj_group_event(gui_heater_switch.heater.ui->cont, gui_heater_switch_cb, &gui_heater_switch.heater);
+    /* encoder绑定 */
+    encoder_add_focus_obj_group_event(gui.heater.heater.ui->cont, gui_heater_switch_cb, &gui.heater.heater);
+
+    gui.heater.active = true;
+
+    ESP_LOGI(TAG, "heater page created");
 }
 
 /* =========================
@@ -49,15 +54,19 @@ void gui_heater_switch_page(lv_obj_t *parent)
 
 void gui_heater_switch_page_delete(void)
 {
-    if (!gui_heater_switch.heater.ui)
+    if (!gui.heater.heater.ui)
     {
-        ESP_LOGE(TAG, "gui_heater_switch.heater.ui is NULL");
+        ESP_LOGE(TAG, "heater UI is NULL");
         return;
     }
 
-    encoder_remove_obj_group(gui_heater_switch.heater.ui->cont);
+    encoder_remove_obj_group(gui.heater.heater.ui->cont);
 
-    ui_capsule_switch_delete(gui_heater_switch.heater.ui);
+    ui_capsule_switch_delete(gui.heater.heater.ui);
 
-    gui_heater_switch.heater.ui = NULL;
+    gui.heater.heater.ui = NULL;
+
+    gui.heater.active = false;
+
+    ESP_LOGI(TAG, "heater page deleted");
 }

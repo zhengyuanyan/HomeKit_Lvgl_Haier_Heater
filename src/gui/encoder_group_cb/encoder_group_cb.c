@@ -69,3 +69,11 @@ void encoder_add_focus_obj_group(lv_obj_t *obj)
 {
     encoder_add_focus_obj_group_event(obj, NULL, NULL);
 }
+
+void encoder_set_group(lv_group_t *group)
+{
+
+    if (!group)
+        return;
+    group = get_lv_group();
+}

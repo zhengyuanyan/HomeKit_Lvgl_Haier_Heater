@@ -30,16 +30,16 @@ extern "C"
     /**
      * @breif 初始化菜单页面
      */
-    void gui_menu_page(void);
+    void gui_main_page(void);
 
     /**
      * @breif 删除菜单页面
      */
-    void gui_menu_page_delete(void);
+    void gui_main_page_delete(void);
     /**
      * @breif 删除菜单页面所有子页面
      */
-    void gui_menu_subpage_delete_all(void);
+    void gui_main_page_subpage_delete_all(void);
 
 #ifdef __cplusplus
 }

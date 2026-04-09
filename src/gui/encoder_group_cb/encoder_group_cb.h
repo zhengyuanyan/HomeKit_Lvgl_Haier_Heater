@@ -53,6 +53,12 @@ void encoder_add_obj_group(lv_obj_t *obj);
  */
 void encoder_remove_obj_group(lv_obj_t *obj);
 
+/**
+ * @brief 设置编码器组
+ * @param group 编码器组
+ */
+void encoder_set_group(lv_group_t *group);
+
 #ifdef __cplusplus
 extern "C"
 {

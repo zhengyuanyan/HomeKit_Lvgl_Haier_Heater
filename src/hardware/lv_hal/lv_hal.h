@@ -41,6 +41,7 @@ extern "C"
      */
     lv_group_t *get_lv_group(void);
 
+    void lv_hal_set_encoder_group(lv_group_t *group);
 
 #ifdef __cplusplus
 }

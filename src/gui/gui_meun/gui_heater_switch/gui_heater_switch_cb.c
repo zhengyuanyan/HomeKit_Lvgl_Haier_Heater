@@ -1,5 +1,5 @@
 #include "gui_heater_switch_cb.h"
-#include "../gui_main/gui_menu.h"
+#include "../gui_main/gui_main.h"
 #include "esp_log.h"
 
 static const char *TAG = "gui_heater_switch_cb";
@@ -33,7 +33,7 @@ void gui_heater_switch_cb(lv_event_t *e)
         break;
 
     case LV_KEY_ESC:
-        gui_menu_page();
+        gui_main_page();
         break;
     default:
         break;

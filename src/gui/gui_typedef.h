@@ -26,118 +26,100 @@ extern "C"
 #endif
 
     /* =========================
-     * 通用组件封装（核心优化点）
+     * 基础组件封装（带状态）
      * ========================= */
 
-    // 开关类组件
+    // 开关组件
     typedef struct
     {
         ui_capsule_switch_t *ui;
         bool value;
+        bool active;
     } gui_switch_t;
 
-    // 旋钮类组件
+    // 旋钮组件
     typedef struct
     {
         ui_segment_knob_t *ui;
         uint8_t value;
+        bool active;
     } gui_knob_t;
 
-    // 亮度类组件
+    // 亮度组件
     typedef struct
     {
         ui_brightness_t *ui;
         uint8_t value;
+        bool active;
     } gui_brightness_t;
 
-    // 温度类组件
+    // 温度组件
     typedef struct
     {
         ui_water_heater_t *ui;
-        uint8_t value;
+        uint8_t temperature;
+        bool active;
     } gui_temperature_t;
 
-    // 预约类组件
+#define GUI_SCHEDULE_MAX 4
+
     typedef struct
     {
         ui_schedule_editor_t *ui;
-        uint8_t value;
+        gui_knob_t main;
+        schedule_t items[GUI_SCHEDULE_MAX]; 
+        uint8_t active_index;
+        bool active;
     } gui_schedule_t;
+
     /* =========================
-     * 页面定义（只组合，不重复造轮子）
+     * 页面层（组合组件）
      * ========================= */
 
-    // 菜单页
+    // 主页
     typedef struct
     {
         gui_knob_t knob;
-    } gui_menu_t;
+        bool active;
+    } gui_main_t;
 
-    extern gui_menu_t gui_menu;
-
-    // 加热开关页
+    // 加热页
     typedef struct
     {
         gui_switch_t heater;
+        bool active;
     } gui_heater_t;
-
-    extern gui_heater_t gui_heater_switch;
 
     // 温度页
     typedef struct
     {
         gui_temperature_t temperature;
+        bool active;
     } gui_water_heater_t;
-
-    extern gui_water_heater_t gui_water_heater;
-
 
     // 系统页
     typedef struct
     {
-        gui_knob_t knob;
+        gui_knob_t main;
+        gui_switch_t buzzer;
+        gui_switch_t motor;
+        gui_brightness_t display;
     } gui_system_t;
 
-    extern gui_system_t gui_system;
-
-    // 系统 - 蜂鸣器
-    typedef struct
-    {
-        gui_switch_t buzzer;
-    } gui_system_buzzer_t;
-
-    extern gui_system_buzzer_t gui_system_buzzer;
-
-    // 系统 - 马达
-    typedef struct
-    {
-        gui_switch_t motor;
-    } gui_system_motor_t;
-
-    extern gui_system_motor_t gui_system_motor;
-
-    // 系统 - 屏幕
-    typedef struct
-    {
-        gui_brightness_t backlight;
-    } gui_system_display_t;
-
-    extern gui_system_display_t gui_system_display;
-
     /* =========================
-     * 可选：统一GUI入口（强烈推荐）
+     * 顶层 GUI（唯一入口）
      * ========================= */
 
     typedef struct
     {
-        gui_menu_t menu;
+        gui_main_t main;
         gui_heater_t heater;
+        gui_water_heater_t water_heater;
+        gui_schedule_t schedule;
         gui_system_t system;
-        gui_system_buzzer_t buzzer;
-        gui_system_motor_t motor;
-        gui_system_display_t display;
     } gui_t;
 
+    /* 全局唯一实例 */
     extern gui_t gui;
 
 #ifdef __cplusplus

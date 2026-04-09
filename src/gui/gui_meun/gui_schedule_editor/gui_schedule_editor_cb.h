@@ -17,7 +17,7 @@
 
 void gui_schedule_editor_page_knob_event_cb(lv_event_t *e);
 
-
+void gui_schedule_open_editor_page_event_cb(lv_event_t *e);
 #ifdef __cplusplus
 extern "C"
 {

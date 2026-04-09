@@ -15,7 +15,7 @@
 #include "lvgl/lvgl.h"
 #endif
 
-void gui_menu_page_knob_event_cb(lv_event_t *e);
+void gui_main_page_knob_event_cb(lv_event_t *e);
 
 
 #ifdef __cplusplus

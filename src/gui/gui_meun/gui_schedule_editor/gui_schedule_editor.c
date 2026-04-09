@@ -1,180 +1,173 @@
 #include "gui_schedule_editor.h"
 #include "gui_schedule_editor_cb.h"
+#include "../../encoder_group_cb/encoder_group_cb.h"
+#include "time.h"
 #include "esp_log.h"
-#include <string.h>
-#include <stdio.h>
 
-static const char *TAG = "schedule_editor";
+static const char *TAG = "gui_schedule_editor";
 
-/* =========================
- * UI内部结构
- * ========================= */
-struct gui_schedule_editor_s
+typedef struct
 {
-    gui_knob_t knob;
-    lv_obj_t *root;
+    const void *icon;
+} gui_schedule_editor_main_item_t;
 
-    gui_schedule_ui_state_t state;
-    uint8_t selected;
-
-    bool active;
+static const gui_schedule_editor_main_item_t main_items[] = {
+    {LV_MENU_SYMBOL_SETTINGS},
+    {LV_MENU_SYMBOL_HEATING},
+    {LV_MENU_SYMBOL_TIMING},
+    {LV_MENU_SYMBOL_TEMPERATURE},
 };
 
-/* =========================
- * 全局实例
- * ========================= */
-static gui_schedule_editor_t g_ui;
-static schedule_mgr_t g_schedule_mgr;
+typedef struct
+{
+    char text[32];
+} schedule_view_t;
 
-/* encoder bind protection */
-static bool encoder_bound = false;
+static schedule_view_t view_cache[GUI_SCHEDULE_MAX];
 
 /* =========================
- * DATA API
+ * 使用统一GUI入口
  * ========================= */
-schedule_mgr_t *schedule_mgr_get(void)
+extern gui_t gui;
+
+/* =========================
+   模拟设备
+========================= */
+static void heater_on(void)
 {
-    return &g_schedule_mgr;
+    printf("🔥 ON\n");
 }
 
-schedule_t *schedule_get(uint8_t id)
+static void heater_off(void)
 {
-    if (id >= SCHEDULE_MAX)
-        return NULL;
-    return &g_schedule_mgr.items[id];
-}
-
-void schedule_set_dirty(void)
-{
-    g_schedule_mgr.dirty = true;
+    printf("❄️ OFF\n");
 }
 
 /* =========================
- * default data
- * ========================= */
-static void schedule_init_default(void)
+   schedule执行逻辑（自己写）
+========================= */
+static void schedule_run(void)
 {
-    g_schedule_mgr.items[0] = (schedule_t){8, 0, 12, 0, true};
-    g_schedule_mgr.items[1] = (schedule_t){13, 0, 18, 0, true};
-    g_schedule_mgr.items[2] = (schedule_t){19, 0, 22, 0, true};
-    g_schedule_mgr.items[3] = (schedule_t){0, 0, 0, 0, false};
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
 
-    g_schedule_mgr.inited = true;
+    int cur = t->tm_hour * 60 + t->tm_min;
+
+    for (int i = 0; i < GUI_SCHEDULE_MAX; i++)
+    {
+        schedule_t *s = &gui.schedule.items[i];
+
+        if (!s->enabled)
+            continue;
+
+        int start = s->start_hour * 60 + s->start_min;
+        int end = s->end_hour * 60 + s->end_min;
+
+        int active = (start <= end)
+                         ? (cur >= start && cur < end)
+                         : (cur >= start || cur < end);
+
+        if (active && !s->state)
+        {
+            s->state = 1;
+            if (s->on_cb)
+                s->on_cb();
+        }
+        else if (!active && s->state)
+        {
+            s->state = 0;
+            if (s->off_cb)
+                s->off_cb();
+        }
+    }
+}
+
+static void build_schedule_cache(void)
+{
+    for (int i = 0; i < GUI_SCHEDULE_MAX; i++)
+    {
+        schedule_t *s = &gui.schedule.items[i];
+
+        snprintf(view_cache[i].text, sizeof(view_cache[i].text),
+                 "开: %02d:%02d\n关: %02d:%02d",
+                 s->start_hour, s->start_min,
+                 s->end_hour, s->end_min);
+    }
 }
 
 /* =========================
- * refresh API
- * ========================= */
-void gui_schedule_editor_refresh(void)
-{
-    ui_sync();
-}
+   打开编辑器
+========================= */
 
-/* =========================
- * editor save callback
- * ========================= */
 static void on_editor_saved(void *user_data)
 {
-    (void)user_data;
+    LV_UNUSED(user_data);
 
-    schedule_set_dirty();
-
-    g_ui.state = UI_STATE_LIST;
-    gui_schedule_editor_refresh();
+    /* 回到主页 */
+    gui_schedule_editor_page(lv_scr_act());
 }
 
-/* =========================
- * open editor async
- * ========================= */
-static void open_editor_async(void *arg)
+static void open_editor_cb(void *data)
 {
-    int id = (int)(intptr_t)arg;
+    int id = (int)(intptr_t)data;
 
-    schedule_t *s = schedule_get(id);
-    if (!s)
-        return;
-
-    g_ui.state = UI_STATE_EDIT;
-    g_ui.selected = id;
-
+    gui.schedule.active_index = id;
+    /* 清屏 */
     lv_obj_t *scr = lv_scr_act();
     lv_obj_clean(scr);
 
-    ui_schedule_editor_create(scr, s, on_editor_saved, NULL);
+    gui.schedule.ui = ui_schedule_editor_create(scr, &gui.schedule.items[id], on_editor_saved, NULL);
+
+    encoder_add_focus_obj_group_event(gui.schedule.ui->root, gui_schedule_open_editor_page_event_cb, &gui.schedule);
 }
 
 /* =========================
- * list click
- * ========================= */
-static void open_editor_cb(lv_event_t *e)
+   首页
+========================= */
+
+void gui_schedule_editor_page(lv_obj_t *parent)
 {
-    int id = (int)(intptr_t)lv_event_get_user_data(e);
-    lv_async_call(open_editor_async, (void *)(intptr_t)id);
-}
+
+    gui.schedule.main.ui = ui_segment_knob_create(parent);
+
+    build_schedule_cache();
 
 
-
-
-/* =========================
- * create UI
- * ========================= */
-static void gui_schedule_editor_create(void)
-{
-    if (g_ui.active)
-        return;
-
-    if (!g_schedule_mgr.inited)
-        schedule_init_default();
-
-    g_ui.root = lv_scr_act();
-    lv_obj_clean(g_ui.root);
-    lv_obj_set_style_bg_color(g_ui.root, lv_color_hex(0x1C1C1E), 0);
-
-    g_ui.state = UI_STATE_LIST;
-    g_ui.selected = 0;
-
-    g_ui.knob.ui = ui_segment_knob_create(g_ui.root);
-    if (!g_ui.knob.ui)
+    if (!gui.schedule.main.ui)
     {
         ESP_LOGE(TAG, "knob create failed");
         return;
     }
-
-    ui_sync();
-
-    encoder_add_focus_obj_group_event(g_ui.knob.ui->cont, gui_schedule_editor_page_knob_event_cb, &g_ui);
-
-    g_ui.active = true;
-}
-
-
-
-void gui_schedule_editor_page(void)
-{
-    lv_async_call((lv_async_cb_t)gui_schedule_editor_create, NULL);
-}
-
-static void gui_schedule_editor_page_delete_async(void *arg)
-{
-    (void)arg;
-
-    if (g_ui.knob.ui && g_ui.knob.ui->cont)
+    for (uint8_t i = 0; i < GUI_SCHEDULE_MAX; i++)
     {
-        encoder_remove_obj_group(g_ui.knob.ui->cont);
+        ui_segment_knob_add_item(gui.schedule.main.ui, view_cache[i].text, main_items[i].icon, open_editor_cb, (void *)(intptr_t)i);
     }
 
-    encoder_bound = false;
+    encoder_add_focus_obj_group_event(gui.schedule.main.ui->cont, gui_schedule_editor_page_knob_event_cb, &gui.schedule.main);
 
-    if (g_ui.knob.ui)
-    {
-        ui_segment_knob_delete(g_ui.knob.ui);
-        g_ui.knob.ui = NULL;
-    }
+    gui.schedule.active = true;
 
-    g_ui.active = false;
+    ESP_LOGI(TAG, "schedule editor page run ");
 }
 
+/* =========================
+ * 页面删除
+ * ========================= */
 void gui_schedule_editor_page_delete(void)
 {
-    lv_async_call(gui_schedule_editor_page_delete_async, NULL);
+
+    if (gui.schedule.main.ui != NULL)
+    {
+        if (gui.schedule.main.ui->cont)
+        {
+            encoder_remove_obj_group(gui.schedule.main.ui->cont);
+        }
+
+        ui_segment_knob_delete(gui.schedule.main.ui);
+        gui.schedule.main.ui = NULL;
+    }
+
+    gui.schedule.active = false;
+
+    ESP_LOGI(TAG, "schedule page deleted");
 }

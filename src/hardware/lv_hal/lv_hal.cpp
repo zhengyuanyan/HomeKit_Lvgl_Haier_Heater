@@ -145,3 +145,8 @@ lv_group_t *get_lv_group(void)
 {
     return lvGroup;
 }
+
+void lv_hal_set_encoder_group(lv_group_t *group)
+{
+    lv_indev_set_group(lvEncoderIndev, group);
+}

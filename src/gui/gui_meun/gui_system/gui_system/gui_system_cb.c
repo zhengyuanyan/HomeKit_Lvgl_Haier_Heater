@@ -1,6 +1,6 @@
 #include "gui_system_cb.h"
 #include "gui_system.h"
-#include "../../gui_main/gui_menu.h"
+#include "../../gui_main/gui_main.h"
 
 void gui_system_page_knob_event_cb(lv_event_t *e)
 {
@@ -26,7 +26,7 @@ void gui_system_page_knob_event_cb(lv_event_t *e)
             ui_segment_knob_enter(ui);
             break;
         case LV_KEY_ESC:
-            gui_menu_page();
+            gui_main_page();
             break;
         default:
             break;

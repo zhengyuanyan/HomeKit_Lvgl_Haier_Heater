@@ -1,9 +1,9 @@
-#include "gui_menu_cb.h"
-#include "gui_menu.h"
+#include "gui_main_cb.h"
+#include "gui_main.h"
 
-void gui_menu_page_knob_event_cb(lv_event_t *e)
+void gui_main_page_knob_event_cb(lv_event_t *e)
 {
-    gui_menu_t *ui = lv_event_get_user_data(e);
+    gui_main_t *ui = lv_event_get_user_data(e);
     if (!ui || !ui->knob.ui)
         return;
     lv_event_code_t code = lv_event_get_code(e);

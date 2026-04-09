@@ -1,5 +1,5 @@
 #include "gui_water_heater_cb.h"
-#include "../gui_main/gui_menu.h"
+#include "../gui_main/gui_main.h"
 #include "esp_log.h"
 
 static const char *TAG = "gui_water_heater_cb";
@@ -15,7 +15,7 @@ void gui_water_heater_cb(lv_event_t *e)
         uint8_t raw_val = ui_water_heater_get_value(wh->temperature.ui);
         uint8_t percent = (uint8_t)LV_CLAMP(35, raw_val, 70);
 
-        gui_water_heater.temperature.value = percent;
+        gui.water_heater.temperature.temperature = percent;
     }
 
     if (code == LV_EVENT_KEY)
@@ -25,17 +25,17 @@ void gui_water_heater_cb(lv_event_t *e)
         switch (key)
         {
         case LV_KEY_ESC:
-            gui_menu_page();
+            gui_main_page();
             break;
         case LV_KEY_ENTER:
 
-            if (!gui_water_heater.temperature.ui)
+            if (!gui.water_heater.temperature.ui)
             {
                 ESP_LOGE(TAG, "gui_water_heater.temperature.ui is NULL");
             }
             else
             {
-                encoder_add_focus_obj_group_editing(gui_water_heater.temperature.ui->arc_water_heater, true);
+                encoder_add_focus_obj_group_editing(gui.water_heater.temperature.ui->arc_water_heater, true);
             }
 
             break;
