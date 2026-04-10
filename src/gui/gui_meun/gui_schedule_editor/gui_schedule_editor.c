@@ -12,10 +12,10 @@ typedef struct
 } gui_schedule_editor_main_item_t;
 
 static const gui_schedule_editor_main_item_t main_items[] = {
-    {LV_MENU_SYMBOL_SETTINGS},
-    {LV_MENU_SYMBOL_HEATING},
-    {LV_MENU_SYMBOL_TIMING},
-    {LV_MENU_SYMBOL_TEMPERATURE},
+    {LV_TIMING_SYMBOL_ONE},
+    {LV_TIMING_SYMBOL_TWO},
+    {LV_TIMING_SYMBOL_THREE},
+    {LV_TIMING_SYMBOL_FOUR},
 };
 
 typedef struct

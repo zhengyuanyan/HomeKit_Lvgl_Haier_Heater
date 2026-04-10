@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+#include <Wire.h>
 #include "./task/task.h"
 #include "esp_log.h"
 static const char *TAG = "main";
@@ -19,7 +19,6 @@ void setup()
   Serial.begin(115200);
   // Serial.setDebugOutput(true);
   delay(1000);
-
 
   esp_log_level_set("*", ESP_LOG_INFO);
   ESP_LOGI(TAG, "ESP32 Model: %s", chipModel);

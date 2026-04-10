@@ -29,14 +29,14 @@ static void encoder_button_enter(gpio_num_t gpio, bool active_low)
 void encoder_init(void)
 {
     rotary_encoder_config_t config;
-#if (LGFX_M5_Dial)
+#if (esp32s3_dial)
 
     encoder_button_enter(encoder_button_enter_Pin, true);
     config = ROTARY_ENCODER_DEFAULT_CONFIG((rotary_encoder_dev_t)pcnt_unit, GPIO_NUM_41, GPIO_NUM_40);
 
-#elif (LGFX_86_Box)
+#elif (esp32s3_86_box)
     {
-        config = ROTARY_ENCODER_DEFAULT_CONFIG((rotary_encoder_dev_t)pcnt_unit, GPIO_NUM_41, GPIO_NUM_40);
+        config = ROTARY_ENCODER_DEFAULT_CONFIG((rotary_encoder_dev_t)pcnt_unit, EC35_A_Pin, EC35_B_Pin);
     }
 #endif
 

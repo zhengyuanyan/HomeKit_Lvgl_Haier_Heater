@@ -20,8 +20,9 @@ extern "C"
 {
 #endif
 
-    LV_FONT_DECLARE(ui_segment_knob_icon_24); // 0xe638,0xe602,0xe61c,0xe606,0xe601,0xe615,0xe8c1,0xe61e,0xe603,0xe63f,0xe612,0xe639,0xe629,0xe624,0xe722
+    // 0xe638,0xe602,0xe61c,0xe606,0xe601,0xe615,0xe8c1,0xe705,0xe61e,0xe603,0xe501,0xe669,0xe66c,0xe63f,0xe612,0xe639,0xe629,0xe624,0xe722
 
+    LV_FONT_DECLARE(ui_segment_knob_icon_24);
 #define LV_MENU_SYMBOL_TEMPERATURE "\xEE\x98\x86" // Unicode  E606
 #define LV_MENU_SYMBOL_HEATING "\xEE\x98\x92"     // Unicode  E612
 #define LV_MENU_SYMBOL_TIMING "\xEE\x98\x9E"      // Unicode  E61E
@@ -37,6 +38,11 @@ extern "C"
 #define LV_SETUP_SYMBOL_ENTER "\xEE\x99\xB9"      // Unicode  E639
 #define LV_SETUP_SYMBOL_ESC "\xEE\x98\x9C"        // Unicode  E61C
 #define LV_SETUP_SYMBOL_WS2812 "\xEE\x98\xBF"     // Unicode  E63F
+
+#define LV_TIMING_SYMBOL_ONE "\xEE\x99\xAC"   // Unicode  E66C
+#define LV_TIMING_SYMBOL_TWO "\xEE\x99\xA9"   // Unicode  E669
+#define LV_TIMING_SYMBOL_THREE "\xEE\x94\x81" // Unicode  E501
+#define LV_TIMING_SYMBOL_FOUR "\xEE\x9C\x85"  // Unicode  E705
 
 #ifdef __cplusplus
 }

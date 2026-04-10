@@ -40,12 +40,12 @@ extern "C"
             struct
             {
                 int diff_value; // encoder diff
-                uint8_t key;      // button
+                uint8_t key;    // button
             } encoder;
 
-            struct  
+            struct
             {
-                bool touch; 
+                bool touch;
                 int16_t x;
                 int16_t y;
             } touch;
@@ -55,7 +55,10 @@ extern "C"
 
     } input_msg_t;
 
-    extern QueueHandle_t input_queue;
+    void input_broadcast_init(void);
+    int input_broadcast_subscribe(void);
+    void input_broadcast_send(input_msg_t msg);
+    bool input_broadcast_pop(int sub_id, input_msg_t *msg, TickType_t timeout);
 
 #ifdef __cplusplus
 }

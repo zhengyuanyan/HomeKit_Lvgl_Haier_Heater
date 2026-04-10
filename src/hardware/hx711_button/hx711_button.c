@@ -6,8 +6,8 @@
 
 static const char *TAG = "Hx711_Button";
 
-#define PRESS_THRESHOLD 0.9f
-#define RELEASE_THRESHOLD 0.5f
+#define PRESS_THRESHOLD 0.5f
+#define RELEASE_THRESHOLD 0.2f // 
 
 #define FILTER_CNT 3
 

@@ -38,11 +38,11 @@ static void encoder_button_enter(gpio_num_t gpio, bool active_low)
 // ================== 初始化 ==================
 void encoder_button_init(void)
 {
-#if LGFX_M5_Dial
+#if esp32s3_dial
     encoder_button_enter(encoder_button_enter_Pin, true);
 
-#elif LGFX_86_Box
-    scale.begin(HX711_PIN_DO, HX711_PIN_SCK);
+#elif esp32s3_86_box
+    scale.begin(HX711_DO_Pin, HX711_SCK_Pin);
 
     hx711_button_init(&knob_btn);
 
@@ -50,7 +50,7 @@ void encoder_button_init(void)
         ;
 
     int32_t raw = scale.read();
-    strain_button_auto_zero(&knob_btn, raw);
+    hx711_button_auto_zero(&knob_btn, raw);
 
     ESP_LOGI(TAG, "HX711 Button 初始化完成");
 #endif
@@ -62,10 +62,10 @@ uint8_t encoder_button_read(void)
     uint32_t now = millis();
     bool pressed = false;
 
-#if LGFX_M5_Dial
+#if esp32s3_dial
     pressed = !gpio_get_level(encoder_button_enter_Pin);
 
-#elif LGFX_86_Box
+#elif esp32s3_86_box
 
     // 👉 非阻塞读取 HX711
     if (scale.is_ready())
@@ -98,7 +98,7 @@ uint8_t encoder_button_read(void)
     }
 
     // ================== 长按（立即触发） ==================
-    if (pressed && !long_sent && !event_sent)
+    if (pressed && !long_sent)
     {
         if ((now - press_time) > LONG_PRESS_MS)
         {
@@ -113,18 +113,22 @@ uint8_t encoder_button_read(void)
     }
 
     // ================== 松开瞬间 ==================
-    if (!pressed && last_pressed && !event_sent)
+    if (!pressed && last_pressed)
     {
-        uint32_t press_len = now - press_time;
-
-        if (press_len > SHORT_PRESS_DEBOUNCE_MS)
+        if (!event_sent)
         {
-            key = LV_KEY_ENTER;
-            event_sent = true;
+
+            uint32_t press_len = now - press_time;
+
+            if (press_len > SHORT_PRESS_DEBOUNCE_MS)
+            {
+                key = LV_KEY_ENTER;
+                event_sent = true;
 
 #ifdef enc_button_input_debug
-            ESP_LOGI(TAG, "[BTN] SHORT PRESS -> ENTER (%lu ms)", press_len);
+                ESP_LOGI(TAG, "[BTN] SHORT PRESS -> ENTER (%lu ms)", press_len);
 #endif
+            }
         }
     }
 

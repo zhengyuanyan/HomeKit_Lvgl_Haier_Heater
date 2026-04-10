@@ -1,5 +1,4 @@
 #include "i2c_manager.h"
-
 #include <Wire.h>
 
 void i2c_init(void)
@@ -8,7 +7,12 @@ void i2c_init(void)
 
     if (!inited)
     {
-        Wire.begin(i2c_sda_Pin, i2c_scl_Pin, i2c_clock_Speed);
+        Wire.setPins(i2c_sda_Pin, i2c_scl_Pin);  
+        
+        Wire.begin();
+
+        Wire.setClock(i2c_clock_Speed);
+
         inited = true;
     }
 }

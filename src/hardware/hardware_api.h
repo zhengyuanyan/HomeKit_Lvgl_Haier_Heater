@@ -11,6 +11,7 @@ extern "C"
 
 #include "input/enc_button_input/enc_button_input.h"
 #include "input/enc_input/enc_input.h"
+#include "input/touch_input/touch_input.h"
 
 
 

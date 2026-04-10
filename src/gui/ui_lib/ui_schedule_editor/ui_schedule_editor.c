@@ -58,7 +58,8 @@ ui_schedule_editor_t *ui_schedule_editor_create(lv_obj_t *parent, schedule_t *sc
 
     lv_obj_clear_flag(ui->root, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_clear_flag(ui->root, LV_OBJ_FLAG_SCROLL_CHAIN);
-
+    lv_obj_set_style_border_width(ui->root, 0, 0);
+    lv_obj_set_style_pad_all(ui->root, 0, 0);
     lv_obj_set_style_radius(ui->root, 120, 0);
     lv_obj_set_style_bg_color(ui->root, lv_color_hex(0x1C1C1E), 0);
 
@@ -66,22 +67,22 @@ ui_schedule_editor_t *ui_schedule_editor_create(lv_obj_t *parent, schedule_t *sc
     ui->roller_start_h = lv_roller_create(ui->root);
     lv_roller_set_options(ui->roller_start_h, hours, LV_ROLLER_MODE_NORMAL);
     lv_obj_set_size(ui->roller_start_h, roller_set_size_w, roller_set_size_h);
-    lv_obj_set_pos(ui->roller_start_h, 20, 65);
+    lv_obj_set_pos(ui->roller_start_h, 25, 70);
 
     ui->roller_start_m = lv_roller_create(ui->root);
     lv_roller_set_options(ui->roller_start_m, mins, LV_ROLLER_MODE_NORMAL);
     lv_obj_set_size(ui->roller_start_m, roller_set_size_w, roller_set_size_h);
-    lv_obj_set_pos(ui->roller_start_m, 70, 65);
+    lv_obj_set_pos(ui->roller_start_m, 75, 70);
 
     ui->roller_end_h = lv_roller_create(ui->root);
     lv_roller_set_options(ui->roller_end_h, hours, LV_ROLLER_MODE_NORMAL);
     lv_obj_set_size(ui->roller_end_h, roller_set_size_w, roller_set_size_h);
-    lv_obj_set_pos(ui->roller_end_h, 120, 65);
+    lv_obj_set_pos(ui->roller_end_h, 125, 70);
 
     ui->roller_end_m = lv_roller_create(ui->root);
     lv_roller_set_options(ui->roller_end_m, mins, LV_ROLLER_MODE_NORMAL);
     lv_obj_set_size(ui->roller_end_m, roller_set_size_w, roller_set_size_h);
-    lv_obj_set_pos(ui->roller_end_m, 170, 65);
+    lv_obj_set_pos(ui->roller_end_m, 175, 70);
 
     lv_roller_set_selected(ui->roller_start_h, schedule->start_hour, LV_ANIM_OFF);
     lv_roller_set_selected(ui->roller_start_m, schedule->start_min, LV_ANIM_OFF);
@@ -90,7 +91,7 @@ ui_schedule_editor_t *ui_schedule_editor_create(lv_obj_t *parent, schedule_t *sc
 
     /* switch */
     ui->sw_enable = lv_switch_create(ui->root);
-    lv_obj_align(ui->sw_enable, LV_ALIGN_TOP_MID, 0, -20);
+    lv_obj_align(ui->sw_enable, LV_ALIGN_TOP_MID, 0, 10);
 
     if (schedule->enabled)
         lv_obj_add_state(ui->sw_enable, LV_STATE_CHECKED);

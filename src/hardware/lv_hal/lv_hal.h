@@ -29,11 +29,6 @@ extern "C"
      */
     void lv_hal_init(void);
 
-    /**
-     *  @brief 设置TFT亮度
-     * @param brightness 亮度值
-     */
-    void tft_set_brightness(uint8_t brightness);
 
     /**
      * @brief 获取编码器组对象
@@ -41,7 +36,7 @@ extern "C"
      */
     lv_group_t *get_lv_group(void);
 
-    void lv_hal_set_encoder_group(lv_group_t *group);
+
 
 #ifdef __cplusplus
 }
