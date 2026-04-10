@@ -54,21 +54,7 @@ extern "C"
      */
     void ui_digital_clock_delete(ui_digital_clock_t *ui);
 
-    /**
-     * @brief 设置一个定时任务
-     *
-     * @param ui      时钟对象
-     * @param id      任务ID（0~MAX_ALARMS-1）
-     * @param hour    小时（0~23）
-     * @param min     分钟（0~59）
-     * @param cb      回调函数（触发时执行）
-     */
-    void ui_digital_clock_set_alarm(ui_digital_clock_t *ui, int id, int hour, int min, void (*cb)(void));
 
-    /**
-     * @brief 关闭某个定时任务
-     */
-    void ui_digital_clock_disable_alarm(ui_digital_clock_t *ui, int id);
 
 #ifdef __cplusplus
 }

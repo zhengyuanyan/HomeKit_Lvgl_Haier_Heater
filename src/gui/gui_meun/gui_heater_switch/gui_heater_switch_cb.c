@@ -9,7 +9,10 @@ void gui_heater_switch_cb(lv_event_t *e)
     gui_heater_t *sw = lv_event_get_user_data(e);
 
     if (!sw || !sw->heater.ui)
+    {
+        ESP_LOGW(TAG, "sw or sw->heater.ui is NULL");
         return;
+    }
 
     uint32_t key = lv_event_get_key(e);
 

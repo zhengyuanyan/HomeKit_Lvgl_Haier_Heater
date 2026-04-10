@@ -132,7 +132,6 @@ void gui_schedule_editor_page(lv_obj_t *parent)
 
     build_schedule_cache();
 
-
     if (!gui.schedule.main.ui)
     {
         ESP_LOGE(TAG, "knob create failed");
@@ -165,9 +164,11 @@ void gui_schedule_editor_page_delete(void)
 
         ui_segment_knob_delete(gui.schedule.main.ui);
         gui.schedule.main.ui = NULL;
+        gui.schedule.active = false;
     }
-
-    gui.schedule.active = false;
-
-    ESP_LOGI(TAG, "schedule page deleted");
+    else
+    {
+        ESP_LOGE(TAG, "schedule editor UI is NULL");
+        return;
+    }
 }

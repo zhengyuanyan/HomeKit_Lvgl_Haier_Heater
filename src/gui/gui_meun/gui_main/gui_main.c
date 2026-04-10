@@ -6,6 +6,7 @@
 #include "../gui_water_heater/gui_water_heater.h"
 #include "../gui_system/gui_system/gui_system.h"
 #include "../gui_schedule_editor/gui_schedule_editor.h"
+#include "../gui_digital_tube_clock/gui_digital_tube_clock.h"
 
 static const char *TAG = "gui_menu";
 
@@ -133,17 +134,23 @@ static void gui_main_page_delete_async(void *arg)
 {
     (void)arg;
 
-    if (!gui.main.knob.ui)
+    if (gui.main.knob.ui != NULL)
     {
-        ESP_LOGE(TAG, "gui_main.knob.ui is NULL");
+        if (gui.main.knob.ui->cont)
+        {
+            encoder_remove_obj_group(gui.main.knob.ui->cont);
+        }
+
+        ui_segment_knob_delete(gui.main.knob.ui);
+
+        gui.main.knob.ui = NULL;
+        gui.main.active = false;
+    }
+    else
+    {
+        ESP_LOGW(TAG, "main UI is NULL");
         return;
     }
-
-    encoder_remove_obj_group(gui.main.knob.ui->cont);
-    ui_segment_knob_delete(gui.main.knob.ui);
-
-    gui.main.knob.ui = NULL;
-    gui.main.active = false;
 }
 
 void gui_main_page_delete(void)
@@ -170,5 +177,9 @@ void gui_main_page_subpage_delete_all(void)
     if (gui.schedule.main.ui || gui.schedule.ui)
     {
         gui_schedule_editor_page_delete();
+    }
+    if (gui.clock.digital_tube.ui)
+    {
+        gui_digital_tube_clock_page_delete();
     }
 }

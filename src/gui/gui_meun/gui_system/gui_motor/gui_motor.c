@@ -47,13 +47,21 @@ void gui_system_motor_page(lv_obj_t *parent)
 
 void gui_system_motor_page_delete(void)
 {
-    if (!gui.system.motor.ui)
+    if (gui.system.motor.ui != NULL)
+    {
+        if (gui.system.motor.ui->cont)
+        {
+            encoder_remove_obj_group(gui.system.motor.ui->cont);
+        }
+
+        ui_capsule_switch_delete(gui.system.motor.ui);
+
+        gui.system.motor.ui = NULL;
+        gui.system.motor.active = false;
+    }
+    else
+    {
+        ESP_LOGW(TAG, "gui system motor UI is NULL");
         return;
-
-    encoder_remove_obj_group(gui.system.motor.ui->cont);
-
-    ui_capsule_switch_delete(gui.system.motor.ui);
-
-    gui.system.motor.ui = NULL;
-    gui.system.motor.active = false;
+    }
 }

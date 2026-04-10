@@ -13,7 +13,10 @@ void gui_system_motor_switch_cb(lv_event_t *e)
     gui_switch_t *sw = (gui_switch_t *)lv_event_get_user_data(e);
 
     if (!sw || !sw->ui)
+    {
+        ESP_LOGE(TAG, "sw or sw->ui is NULL");
         return;
+    }
 
     /* =========================
      * 按键处理

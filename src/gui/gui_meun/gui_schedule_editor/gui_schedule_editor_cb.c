@@ -3,11 +3,17 @@
 #include "../gui_main/gui_main.h"
 #include "esp_log.h"
 
+static const char *TAG = "gui_schedule_editor_cb";
+
 void gui_schedule_editor_page_knob_event_cb(lv_event_t *e)
 {
     gui_knob_t *knob = lv_event_get_user_data(e);
     if (!knob || !knob->ui)
+    {
+        ESP_LOGE(TAG, "knob or knob->ui is NULL");
         return;
+    }
+
     lv_event_code_t code = lv_event_get_code(e);
 
     if (code == LV_EVENT_KEY)

@@ -54,7 +54,14 @@ gui_t gui =
         .schedule =
             {
                 .ui = NULL,
-                .main = NULL,
+
+                .main =
+                    {
+                        .ui = NULL,
+                        .value = 0,
+                        .active = false,
+                    },
+
                 .active_index = 0,
                 .active = false,
 
@@ -68,7 +75,9 @@ gui_t gui =
                                 .end_min = 0,
                                 .enabled = false,
                                 .state = false,
-                            }}},
+                            }
+                    }
+            },
 
         /* =====================
          * system（如果有）
@@ -92,7 +101,17 @@ gui_t gui =
                         .ui = NULL,
                         .value = 30,
                         .active = false,
-                    }
+                    }},
+        /* =====================
+         * clock（如果有）
+         * ===================== */
+        .clock =
+            {
+                .digital_tube =
+                    {
+                        .ui = NULL,
+                        .active = false,
+                    },
             }
     };
 

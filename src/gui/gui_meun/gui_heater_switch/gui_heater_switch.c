@@ -54,19 +54,21 @@ void gui_heater_switch_page(lv_obj_t *parent)
 
 void gui_heater_switch_page_delete(void)
 {
-    if (!gui.heater.heater.ui)
+
+    if (gui.heater.heater.ui != NULL)
     {
-        ESP_LOGE(TAG, "heater UI is NULL");
+        if (gui.heater.heater.ui->cont)
+        {
+            encoder_remove_obj_group(gui.heater.heater.ui->cont);
+        }
+
+        ui_capsule_switch_delete(gui.heater.heater.ui);
+        gui.heater.heater.ui = NULL;
+        gui.heater.active = false;
+    }
+    else
+    {
+        ESP_LOGW(TAG, "heater UI is NULL");
         return;
     }
-
-    encoder_remove_obj_group(gui.heater.heater.ui->cont);
-
-    ui_capsule_switch_delete(gui.heater.heater.ui);
-
-    gui.heater.heater.ui = NULL;
-
-    gui.heater.active = false;
-
-    ESP_LOGI(TAG, "heater page deleted");
 }

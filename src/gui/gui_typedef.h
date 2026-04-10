@@ -67,10 +67,16 @@ extern "C"
     {
         ui_schedule_editor_t *ui;
         gui_knob_t main;
-        schedule_t items[GUI_SCHEDULE_MAX]; 
+        schedule_t items[GUI_SCHEDULE_MAX];
         uint8_t active_index;
         bool active;
     } gui_schedule_t;
+
+    typedef struct
+    {
+        ui_digital_clock_t *ui;
+        bool active;
+    } gui_digital_tube_t;
 
     /* =========================
      * 页面层（组合组件）
@@ -106,6 +112,12 @@ extern "C"
         gui_brightness_t display;
     } gui_system_t;
 
+    // 时钟页
+    typedef struct
+    {
+        gui_digital_tube_t digital_tube;
+
+    } gui_clock_t;
     /* =========================
      * 顶层 GUI（唯一入口）
      * ========================= */
@@ -117,6 +129,7 @@ extern "C"
         gui_water_heater_t water_heater;
         gui_schedule_t schedule;
         gui_system_t system;
+        gui_clock_t clock;
     } gui_t;
 
     /* 全局唯一实例 */

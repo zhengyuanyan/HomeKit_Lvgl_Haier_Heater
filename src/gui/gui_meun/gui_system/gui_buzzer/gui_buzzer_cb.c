@@ -2,12 +2,17 @@
 #include "../gui_system/gui_system.h"
 #include "esp_log.h"
 
+static const char *TAG = "gui_buzzer_cb";
+
 void gui_system_buzzer_switch_cb(lv_event_t *e)
 {
     gui_switch_t *sw = lv_event_get_user_data(e);
 
     if (!sw || !sw->ui)
+    {
+        ESP_LOGE(TAG, "sw or sw->ui is NULL");
         return;
+    }
 
     uint32_t key = lv_event_get_key(e);
 

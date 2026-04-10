@@ -1,12 +1,19 @@
 #include "gui_system_cb.h"
 #include "gui_system.h"
 #include "../../gui_main/gui_main.h"
+#include "esp_log.h"
+
+static const char *TAG = "gui_system_cb";
 
 void gui_system_page_knob_event_cb(lv_event_t *e)
 {
     ui_segment_knob_t *ui = lv_event_get_user_data(e);
     if (!ui)
+    {
+        ESP_LOGE(TAG, "ui is NULL");
         return;
+    }
+       
     lv_event_code_t code = lv_event_get_code(e);
 
     if (code == LV_EVENT_KEY)

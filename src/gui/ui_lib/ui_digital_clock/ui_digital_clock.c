@@ -139,7 +139,7 @@ ui_digital_clock_t *ui_digital_clock_create(lv_obj_t *parent)
     lv_obj_set_style_pad_all(ui->cont, 0, 0);
 
     /* ===== 可调参数 ===== */
-    int digit_offset_x = -30; // 数码管X偏移
+    int digit_offset_x = -25; // 数码管X偏移
     int digit_offset_y = -35; // 数码管Y偏移
 
     int spacing = 30;         // 数码管间距
@@ -147,7 +147,7 @@ ui_digital_clock_t *ui_digital_clock_create(lv_obj_t *parent)
     int colon_w = 8;          // 冒号宽度
     int colon_spacing = 10;   // 冒号间距
     int colon_offset_y = 20;  // 冒号偏移Y
-    int colon_offset_x = -12; // 冒号偏移X
+    int colon_offset_x = -7; // 冒号偏移X
     /* ===== 创建 digit ===== */
     for (int i = 0; i < 4; i++)
     {

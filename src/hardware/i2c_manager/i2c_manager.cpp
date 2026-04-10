@@ -7,11 +7,11 @@ void i2c_init(void)
 
     if (!inited)
     {
-        Wire.setPins(i2c_sda_Pin, i2c_scl_Pin);  
+        Wire.setPins(I2C_SDA_Pin, I2C_SCL_Pin);  
         
         Wire.begin();
 
-        Wire.setClock(i2c_clock_Speed);
+        Wire.setClock(I2C_CLOCK_Speed);
 
         inited = true;
     }

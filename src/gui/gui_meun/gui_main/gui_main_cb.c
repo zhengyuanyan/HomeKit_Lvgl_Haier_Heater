@@ -1,11 +1,18 @@
 #include "gui_main_cb.h"
 #include "gui_main.h"
+#include "../gui_digital_tube_clock/gui_digital_tube_clock.h"
+#include "esp_log.h"
+
+static const char *TAG = "gui_main_cb";
 
 void gui_main_page_knob_event_cb(lv_event_t *e)
 {
     gui_main_t *ui = lv_event_get_user_data(e);
     if (!ui || !ui->knob.ui)
+    {
+        ESP_LOGE(TAG, "ui or ui->knob.ui is NULL");
         return;
+    }
     lv_event_code_t code = lv_event_get_code(e);
 
     if (code == LV_EVENT_KEY)
@@ -25,7 +32,7 @@ void gui_main_page_knob_event_cb(lv_event_t *e)
             ui_segment_knob_enter(ui->knob.ui);
             break;
         case LV_KEY_ESC:
-
+            gui_digital_tube_clock_page();
             break;
         default:
             break;

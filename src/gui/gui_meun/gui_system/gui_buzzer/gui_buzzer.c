@@ -47,14 +47,22 @@ void gui_system_buzzer_page(lv_obj_t *parent)
 
 void gui_system_buzzer_page_delete(void)
 {
-    if (!gui.system.buzzer.ui)
+    if (gui.system.buzzer.ui != NULL)
+    {
+        if (gui.system.buzzer.ui->cont)
+        {
+            encoder_remove_obj_group(gui.system.buzzer.ui->cont);
+        }
+
+        ui_capsule_switch_delete(gui.system.buzzer.ui);
+
+        gui.system.buzzer.ui = NULL;
+
+        gui.system.buzzer.active = false;
+    }
+    else
+    {
+        ESP_LOGE(TAG, "gui system buzzer UI is NULL");
         return;
-
-    encoder_remove_obj_group(gui.system.buzzer.ui->cont);
-
-    ui_capsule_switch_delete(gui.system.buzzer.ui);
-
-    gui.system.buzzer.ui = NULL;
-
-    gui.system.buzzer.active = false;
+    }
 }

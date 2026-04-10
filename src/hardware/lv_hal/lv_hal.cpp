@@ -23,8 +23,6 @@ static lv_indev_t *lvTouchIndev;
 static lv_indev_t *lvEncoderIndev;
 static lv_group_t *lvGroup;
 
-#define TFT_HOR_RES 240
-#define TFT_VER_RES 240
 #define TFT_ROTATION LV_DISPLAY_ROTATION_0
 
 #define DRAW_BUF_SIZE (TFT_HOR_RES * TFT_VER_RES / 10 * (LV_COLOR_DEPTH / 8))
@@ -70,7 +68,6 @@ static void encoder_read_cb(lv_indev_t *drv, lv_indev_data_t *data)
     int diff = 0;
     data->enc_diff = 0;
 
-    // if (xQueueReceive(input_queue, &msg, 0) == pdTRUE)
     if (input_broadcast_pop(encoder_sub_id, &msg, 0))
     {
 
